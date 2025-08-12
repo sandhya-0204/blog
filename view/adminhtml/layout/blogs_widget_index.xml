@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * @package     Sprinix_Blogs
+ * @copyright   Copyright (c) 2024 Sprinix Technolabs pvt Ltd.. (https://www.sprinix.com)
+ */
+-->
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <!--<uiComponent name="blogs_widget_listing" />-->
+            <block class="Sprinix\Blogs\Block\Adminhtml\Widget\Widget" name="mageplaza_post_grid">
+                <block class="Magento\Backend\Block\Widget\Grid" name="mageplaza_post_grid.grid" as="grid">
+                    <arguments>
+                        <argument name="id" xsi:type="string">widget_id</argument>
+                        <!--<argument name="dataSource" xsi:type="object">Magento\Widget\Model\ResourceModel\Widget\Instance\Collection</argument>-->
+                        <!--<argument name="dataSource" xsi:type="array">Sprinix\Blogs\Model\Source\DataProvider</argument>-->
+                        <argument name="default_sort" xsi:type="string">id</argument>
+                        <argument name="default_dir" xsi:type="string">ASC</argument>
+                        <argument name="save_parameters_in_session" xsi:type="string">1</argument>
+                    </arguments>
+                    <block class="Magento\Backend\Block\Widget\Grid\ColumnSet" name="mageplaza_post_grid.grid.columnSet" as="grid.columnSet">
+                        <block class="Magento\Backend\Block\Widget\Grid\Column" as="name">
+                            <arguments>
+                                <argument name="header" xsi:type="string" translate="true">Name</argument>
+                                <argument name="index" xsi:type="string">title</argument>
+                                <argument name="type" xsi:type="string">text</argument>
+                                <argument name="column_css_class" xsi:type="string">col-id</argument>
+                                <argument name="header_css_class" xsi:type="string">col-id</argument>
+                            </arguments>
+                        </block>
+                    </block>
+                </block>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

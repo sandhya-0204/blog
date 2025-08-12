@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * @package     Sprinix_Blogs
+ * @copyright   Copyright (c) 2024 Sprinix Technolabs pvt Ltd.. (https://www.sprinix.com)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="sprinix" translate="label" sortOrder="10">
+            <label>Sprinix</label>
+        </tab>
+        <section id="sprinix_blogs" translate="label" sortOrder="130" showInDefault="1"
+                 showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Blog</label>
+            <tab>sprinix</tab>
+            <resource>Sprinix_Blogs::blogs_config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1"
+                   showInWebsite="1" showInStore="1">
+                <label>Blog Settings</label>
+                <field id="enable" translate="label" type="select"  showInDefault="1" sortOrder="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Module Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+
+            <group id="layout" translate="label" type="text" sortOrder="10" showInDefault="1"
+                   showInWebsite="1" showInStore="1">
+                <label>Blog Layout Settings</label>
+                <field id="recent_posts" translate="label" type="select"  showInDefault="1" sortOrder="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Show Recent Posts</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="categories" translate="label" type="select"  showInDefault="1" sortOrder="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Show Categories</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="sortBy" translate="label" type="select"  showInDefault="1" sortOrder="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Show Sort By</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="tags" translate="label" type="select"  showInDefault="1" sortOrder="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Show Tags</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="date_format" translate="label" type="text" sortOrder="10" showInDefault="1"
+                   showInWebsite="1" showInStore="1">
+                <label>Date Settings</label>
+                <field id="format" translate="label" type="select"  showInDefault="1" sortOrder="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Choose Date Format</label>
+                    <source_model>Sprinix\Blogs\Model\Source\DateFormats\OptionSource</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

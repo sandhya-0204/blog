@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @package     Sprinix_Blogs
+ * @copyright   Copyright (c) 2024 Sprinix Technolabs pvt Ltd.. (https://www.sprinix.com)
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <sprinix_blogs>
+            <general>
+                <enable>0</enable>
+            </general>
+            <layout>
+                <recent_posts>0</recent_posts>
+                <categories>0</categories>
+                <sortBy>0</sortBy>
+                <tags>0</tags>
+            </layout>
+            <date_format>
+                <format>Relative Date</format>
+            </date_format>
+        </sprinix_blogs>
+    </default>
+</config>

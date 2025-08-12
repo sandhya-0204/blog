@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * @package     Sprinix_Blogs
+ * @copyright   Copyright (c) 2024 Sprinix Technolabs pvt Ltd.. (https://www.sprinix.com)
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add  id="Sprinix_Blogs::blogs" title="Blogs" module="Sprinix_Blogs" resource="Sprinix_Blogs::blogs" parent="Magento_Backend::content" sortOrder="55" dependsOnConfig="sprinix_blogs/general/enable" />
+        <add id="Sprinix_Blogs::posts" title="All Posts" module="Sprinix_Blogs" resource="Sprinix_Blogs::posts" parent="Sprinix_Blogs::blogs" action="blogs/posts"  />
+        <add id="Sprinix_Blogs::categories" title="All Categories" module="Sprinix_Blogs" resource="Sprinix_Blogs::categories" parent="Sprinix_Blogs::blogs" action="blogs/categories" />
+        <add id="Sprinix_Blogs::tags" title="All Tags" module="Sprinix_Blogs" resource="Sprinix_Blogs::tags" parent="Sprinix_Blogs::blogs" action="blogs/tags"  />
+        <add id="Sprinix_Blogs::comment" title="Comments" module="Sprinix_Blogs" resource="Sprinix_Blogs::comment" parent="Sprinix_Blogs::blogs" action="blogs/comments"  />
+        <add id="Sprinix_Blogs::reply" title="Reply" module="Sprinix_Blogs" resource="Sprinix_Blogs::Reply" parent="Sprinix_Blogs::blogs" action="blogs/reply"  />
+    </menu>
+</config>
