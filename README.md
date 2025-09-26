@@ -1,4 +1,4 @@
-# Sprinix Product Label
+# Sprinix Blogs Extension
 
 Sprinix Blog Extension for Magento2.
 
@@ -22,7 +22,7 @@ Installation Instructions
 #####. Copy and paste
 
 - Download `Blogs.zip` file . 
-- Extract `Blogs.zip` file to `app/code/Sprinix/Blogs` ; You should create a folder path `app/code/Sprinix/ProductLabel` if not exist.
+- Extract `Blogs.zip` file to `app/code/Sprinix/Blogs` ; You should create a folder path `app/code/Sprinix/Blogs` if not exist.
 - Go to Magento root folder and run upgrade command line to install `Sprinix_Blogs`:
 
 ```
