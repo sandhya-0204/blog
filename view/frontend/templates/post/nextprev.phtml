@@ -1,0 +1,64 @@
+<?php
+/** @var \Sprinix\Blogs\Block\Index\NextPrev $block */
+
+$currentPost = $block->getCurrentPost();
+$previousPost = $block->getPreviousPost();
+$nextPost = $block->getNextPost();
+?>
+
+<?php if ($previousPost || $nextPost): ?>
+    <div class="blog-next-prev">
+        <div>
+            <?php if ($previousPost): ?>
+                <a href="<?= $escaper->escapeUrl($block->getUrl('blog/' . $previousPost->getUrlKey())) ?>"
+                   class="prev-post">
+                    <span>←</span>
+                    <span><?= $escaper->escapeHtml($previousPost->getTitle()) ?></span>
+                </a>
+            <?php endif; ?>
+        </div>
+        <div>
+            <?php if ($nextPost): ?>
+                <a href="<?= $escaper->escapeUrl($block->getUrl('blog/' . $nextPost->getUrlKey())) ?>"
+                   class="next-post">
+                    <span><?= $escaper->escapeHtml($nextPost->getTitle()) ?></span>
+                    <span>→</span>
+                </a>
+            <?php endif; ?>
+        </div>
+    </div>
+<?php endif; ?>
+<style>
+    .blog-next-prev {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .blog-next-prev > div {
+        max-width: 48%;
+    }
+
+    .blog-next-prev a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #333;
+        text-decoration: none;
+        font-size: 16px;
+    }
+
+    .blog-next-prev a:hover {
+        color: #1979c3;
+        text-decoration: underline;
+    }
+
+    .blog-next-prev .prev-post {
+        text-align: left;
+    }
+
+    .blog-next-prev .next-post {
+        text-align: right;
+    }
+</style>

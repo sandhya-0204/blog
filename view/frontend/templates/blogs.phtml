@@ -1,0 +1,230 @@
+<?php
+/**
+ * @package     Sprinix_Blogs
+ * @copyright   Copyright (c) 2024 Sprinix Technolabs pvt Ltd.. (https://www.sprinix.com)
+ */
+
+/**
+ * @var \Sprinix\Blogs\Block\Index\Index $block
+ */
+?>
+<?php
+$posts = [];
+$recentPosts = [];
+$categories = $block->getAllCategories();
+$tags = $block->getAllActiveTags();
+if(!empty($block->getPostCollection())) {
+    $posts = $block->getPostCollection()->getItems();
+}
+if(!empty($block->getRecentPost())) {
+    $recentPosts = $block->getRecentPost()->getItems();
+}
+
+$sortBy = $this->getRequest()->getParam('sort');
+$currentUrl = $block->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true]);
+$params = isset($currentUrl) ? explode('?', $currentUrl) : null;
+if (isset($params[1])) {
+    $params = $params[1];
+} else {
+    $params[0] = null;
+}
+$helper = $this->helper('Sprinix\Blogs\Helper\CustomDateTime');
+$layoutHelper = $this->helper('Sprinix\Blogs\Helper\Data');
+$isRecentPostsVisible = $layoutHelper->getLayoutConfig('recent_posts');
+$isCategoriesVisible = $layoutHelper->getLayoutConfig('categories');
+$isSortByVisible = $layoutHelper->getLayoutConfig('sortBy');
+$isTagsVisible = $layoutHelper->getLayoutConfig('tags');
+?>
+<div class="sprinix-blog-post-module">
+    <div class="posts-wrapper">
+        <div class="post-search-form">
+            <form action="<?php echo $block->getUrl('blog/search') ?>" class="form-section-wrap">
+                <input type="search" name="s" placeholder="Search By Blog Title, Author Name, Tags"/>
+                <button type="submit" class="btn-sprinix-input">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><path fill="currentColor" d="m19.6 21l-6.3-6.3q-.75.6-1.725.95T9.5 16q-2.725 0-4.612-1.888T3 9.5t1.888-4.612T9.5 3t4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l6.3 6.3zM9.5 14q1.875 0 3.188-1.312T14 9.5t-1.312-3.187T9.5 5T6.313 6.313T5 9.5t1.313 3.188T9.5 14"/></svg>
+                </button>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col col-main">
+                <?php if (!empty($posts)): ?>
+                <div class="sprinix-blog-post-card">
+                    <?php foreach ($posts as $post) : ?>
+
+                        <div class="post-card">
+                            <div class="post-card-main-image">
+                                <a href="<?= $block->getBaseUrl() . 'blog/' . $post->getUrlKey() ?>">
+                                    <img
+                                            src="<?= $block->getMedia() . 'Sprinix/Blogs/' . $post->getPostImage() ?>"
+                                            alt="sprinix_<?= $post->getPostImage() ?>"
+                                    />
+                                </a>
+                            </div>
+                            <div class="post-card-body">
+                                <div class="post-details">
+                                    <div class="post-author">
+                                        <img src="https://cdn.pixabay.com/photo/2021/07/25/08/03/account-6491185_1280.png"
+                                             alt="image"/>
+                                        <p class="author-name"><?= $post->getAuthor() ?></p>
+                                    </div>
+                                    <p class="post-created-date"><?= __($helper->getFormattedDate($post->getCreatedAt())) ?></p>
+                                </div>
+                                <a class="post-title" href="<?= $block->getBaseUrl() . 'blog/' . $post->getUrlKey() ?>">
+                                    <?= $post->getTitle() ?>
+                                </a>
+                                <div class="post-summary"><?= $post->getSummary() ? $block->parseContent($post->getSummary()) : '' ?></div>
+                                <div class="recent-post-section-btn">
+                                    <a class="post-read-more-btn" href="<?= $block->getBaseUrl() . 'blog/' . $post->getUrlKey() ?>">
+                                        <?= __('Read More') ?>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <?php else: ?>
+                    <p class="not-found-post-wrap">No Post Found!</p>
+                <?php endif; ?>
+            </div>
+            <div class="col col-right">
+                <div class="small-card-wrapper">
+                    <?php if(!empty($isRecentPostsVisible) && $isRecentPostsVisible): ?>
+                        <div class="small-card">
+                            <h3 class="card-header">Recent Posts</h3>
+                            <div class="card-content">
+                                <?php if(!empty($recentPosts)): ?>
+                                    <?php foreach ($recentPosts as $recentPost):  ?>
+                                        <div class="recent-post">
+                                            <a class="recent-post-img-link" href="<?= $block->getBaseUrl() . 'blog/' . $recentPost->getUrlKey() ?>">
+                                                <img src="<?= $block->getMedia() . 'Sprinix/Blogs/' . $recentPost->getPostImage() ?>"
+                                                     alt="sprinix_<?= $recentPost->getPostImage() ?>"
+                                                />
+                                            </a>
+                                            <div class="recent-post-content">
+                                            <div class="post-details">
+                                                <div class="post-author">
+                                                    <img src="https://cdn.pixabay.com/photo/2021/07/25/08/03/account-6491185_1280.png"
+                                                         alt="image"/>
+                                                    <p class="author-name"><?= $recentPost->getAuthor() ?></p>
+                                                </div>
+                                                <p class="post-created-date"><?= __($helper->getFormattedDate($recentPost->getCreatedAt())) ?></p>
+                                            </div>
+                                            <a class="recent-post-title" href="<?= $block->getBaseUrl() . 'blog/' . $recentPost->getUrlKey() ?>">
+                                                <?= $recentPost->getTitle() ?>
+                                            </a>
+                                            </div>
+                                            </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="small-card-wrapper">
+                    <?php if(!empty($isSortByVisible) && $isSortByVisible): ?>
+                        <div class="small-card">
+                            <h3 class="card-header">Sort By</h3>
+                            <div class="card-content">
+                                <form action="#" id="sortBy">
+                                    <label for="desc">
+                                        <input id="desc" type="radio" name="sort" value="desc" checked/>
+                                        <span>Latest</span>
+                                    </label>
+                                    <label for="asc">
+                                        <input id="asc" type="radio" name="sort"
+                                               value="asc" <?php echo !empty($sortBy) && $sortBy === 'asc' ? 'checked' : null; ?> />
+                                        <span>Old</span>
+                                    </label>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if(!empty($isCategoriesVisible) && $isCategoriesVisible): ?>
+                        <?php if (!empty($categories)) : ?>
+                            <div class="small-card">
+                                <h3 class="card-header">Categories</h3>
+                                <ul class="card-content">
+                                    <li class="card-item">
+                                        <a class="card-link" href="<?= $block->getUrl('blog') ?>">All</a>
+                                    </li>
+                                    <?php foreach ($categories as $category): ?>
+                                        <li class="card-item">
+                                            <a class="card-link"
+                                               href="<?= $block->getUrl('blog/category/' . $category->getCategoryUrlKey(), ['_secure' => true]) ?>">
+                                                <?= $category->getCategory() ?>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    <?php if(!empty($isTagsVisible) && $isTagsVisible): ?>
+                        <?php if (!empty($tags)) : ?>
+                            <div class="small-card">
+                                <h3 class="card-header">Tags</h3>
+                                <ul class="card-content">
+                                    <?php foreach ($tags as $tag): ?>
+                                        <li class="card-item">
+                                            <a class="card-link"
+                                               href="<?= $block->getUrl('blog/tags/' . $tag->getTagUrlKey(), ['_secure' => true]) ?>">
+                                                <?= $tag->getTagName() ?>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+        <?php if ($block->getPagerHtml()): ?>
+            <div class="order-products-toolbar toolbar bottom"><?php echo $block->getPagerHtml(); ?></div>
+        <?php endif ?>
+    </div>
+</div>
+
+<style>
+
+    @media screen and (min-width: 768px) {
+        .sprinix-blog-post-module .row {
+            grid-template-columns: <?= !empty($isRecentPostsVisible) && $isRecentPostsVisible ? '2fr 1fr' : 'repeat(1,1fr)' ?>;
+        <?= !empty($isRecentPostsVisible) && $isRecentPostsVisible ? null : 'justify-content: center;'?>
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .sprinix-blog-post-module .row {
+            grid-template-columns: <?= !empty($isRecentPostsVisible) && $isRecentPostsVisible ? '1fr' : '1fr' ?>;
+        <?= !empty($isRecentPostsVisible) && $isRecentPostsVisible ? null : 'justify-content: center;'?>
+        }
+    }
+
+</style>
+
+
+
+<script type="text/javascript">
+    require(['jquery'], function ($) {
+        $(document).ready(function () {
+            $("input[name='sort']").on('change', (function (e) {
+                e.preventDefault();
+                const value = $(this).val()
+                let currentUrl = window.location.href;
+                let url = new URL(currentUrl)
+                url.searchParams.delete('sort')
+                if (currentUrl.indexOf('?') > -1 && value !== 'desc') {
+                    url += '&sort=' + value
+                } else if (value !== 'desc') {
+                    url += '?sort=' + value
+                }
+                window.location.href = url;
+            }));
+        });
+    });
+</script>
+
+
+

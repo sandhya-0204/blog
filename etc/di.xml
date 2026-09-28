@@ -1,0 +1,85 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * @package     Sprinix_Blogs
+ * @copyright   Copyright (c) 2024 Sprinix Technolabs pvt Ltd.. (https://www.sprinix.com)
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Sprinix\Blogs\Model\ResourceModel\Post\Post\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">posts</argument>
+            <argument name="eventPrefix" xsi:type="string">posts_collection</argument>
+            <argument name="eventObject" xsi:type="string">posts_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Sprinix\Blogs\Model\ResourceModel\Post</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="blogs_post_listing_data_source" xsi:type="string">Sprinix\Blogs\Model\ResourceModel\Post\Post\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Sprinix\Blogs\Model\ResourceModel\Categories\Categories\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">categories</argument>
+            <argument name="resourceModel" xsi:type="string">Sprinix\Blogs\Model\ResourceModel\Categories</argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="blogs_category_listing_data_source" xsi:type="string">Sprinix\Blogs\Model\ResourceModel\Categories\Categories\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Sprinix\Blogs\Model\ResourceModel\Comment\Comment\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">post_comment</argument>
+            <argument name="eventPrefix" xsi:type="string">comment_collection</argument>
+            <argument name="eventObject" xsi:type="string">comment_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Sprinix\Blogs\Model\ResourceModel\Comment</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="blogs_comments_listing_data_source" xsi:type="string">Sprinix\Blogs\Model\ResourceModel\Comment\Comment\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Sprinix\Blogs\Model\ResourceModel\CommentReply\CommentReply\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">comment_reply</argument>
+            <argument name="eventPrefix" xsi:type="string">commentreply_collection</argument>
+            <argument name="eventObject" xsi:type="string">commentreply_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Sprinix\Blogs\Model\ResourceModel\CommentReply</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="blogs_reply_listing_data_source" xsi:type="string">Sprinix\Blogs\Model\ResourceModel\CommentReply\CommentReply\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Sprinix\Blogs\Model\ResourceModel\Tags\Tags\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">blogs_tags</argument>
+            <argument name="resourceModel" xsi:type="string">Sprinix\Blogs\Model\ResourceModel\Tags</argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="blogs_tags_listing_data_source" xsi:type="string">Sprinix\Blogs\Model\ResourceModel\Tags\Tags\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Theme\Block\Html\Topmenu">
+        <plugin name="custom_menu_item" type="Sprinix\Blogs\Plugin\Topmenu" sortOrder="10"
+                disabled="false"/>
+    </type>
+</config>

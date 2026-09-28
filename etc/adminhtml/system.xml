@@ -1,0 +1,123 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * @package     Sprinix_Blogs
+ * @copyright   Copyright (c) 2024 Sprinix Technolabs pvt Ltd.. (https://www.sprinix.com)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="sprinix" translate="label" sortOrder="10">
+            <label>Sprinix</label>
+        </tab>
+        <section id="sprinix_blogs" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Blog</label>
+            <tab>sprinix</tab>
+            <resource>Sprinix_Blogs::blogs_config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1"
+                   showInWebsite="1" showInStore="1">
+                <label>Blog Settings</label>
+                <field id="enable" translate="label" type="select"  showInDefault="1" sortOrder="10"
+                       showInWebsite="1" showInStore="1">
+                    <label>Module Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="show_in_menu" translate="label" type="select"  showInDefault="1" sortOrder="15"
+                       showInWebsite="1" showInStore="1">
+                    <label>Show Blog in Menu</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="layout" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Blog Layout Settings</label>
+                <field id="recent_posts" translate="label" type="select"  showInDefault="1" sortOrder="10" showInWebsite="1" showInStore="1">
+                    <label>Show Recent Posts</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="categories" translate="label" type="select"  showInDefault="1" sortOrder="20" showInWebsite="1" showInStore="1">
+                    <label>Show Categories</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="sortBy" translate="label" type="select" showInDefault="1" sortOrder="30" showInWebsite="1" showInStore="1">
+                    <label>Show Sort By</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="tags" translate="label" type="select"  showInDefault="1" sortOrder="40" showInWebsite="1" showInStore="1">
+                    <label>Show Tags</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="show_view_count" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Views Count</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="copy_clipboard" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Copy to Clipboard</label>
+                    <comment>Enable or disable the copy to clipboard option.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="comment_reply_settings" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Comment / Reply Settings</label>
+                <field id="comments" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Comment/Reply</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="new_reply_status" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>New Reply Status</label>
+                    <comment>Set the default status for new replies.</comment>
+                    <source_model>Sprinix\Blogs\Model\Source\CommentStatus</source_model>
+                </field>
+                <field id="new_comment_status" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>New Comment Status</label>
+                    <comment>Set the default status for new comments.</comment>
+                    <source_model>Sprinix\Blogs\Model\Source\CommentStatus</source_model>
+                </field>
+                <field id="max_comments_per_email" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Maximum Comments Per Email on Same Post</label>
+                    <comment>Leave blank for unlimited comments, or enter a limit.</comment>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="comment_character_limit" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Comment/Reply Character Limit</label>
+                    <validate>validate-number validate-greater-than-zero</validate>
+                    <comment>Set the maximum number of characters allowed in comments and replies.</comment>
+                </field>
+            </group>
+            <group id="previous_next_post" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Previous and Next Post</label>
+                <field id="display_btn" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display Prev. &amp; Next Post Links</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="blog_list_seo" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Blog List SEO</label>
+                <field id="page_title" translate="label comment" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Page Title</label>
+                    <comment>Enter the page title for the blog list page.</comment>
+                </field>
+                <field id="meta_title" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Meta Title</label>
+                    <comment>Enter the meta title for the blog list page.</comment>
+                </field>
+                <field id="meta_description" translate="label comment" type="textarea" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Meta Description</label>
+                    <comment>Enter the meta description for the blog list page.</comment>
+                </field>
+                <field id="meta_keywords" translate="label comment" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Meta Keywords</label>
+                    <comment>Enter comma-separated keywords for the blog list page.</comment>
+                </field>
+            </group>
+            <group id="date_format" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Date Settings</label>
+                <field id="format" translate="label" type="select"  showInDefault="1" sortOrder="1" showInWebsite="1" showInStore="1">
+                    <label>Choose Date Format</label>
+                    <source_model>Sprinix\Blogs\Model\Source\DateFormats\OptionSource</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

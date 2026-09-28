@@ -1,0 +1,94 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * @package     Sprinix_Blogs
+ * @copyright   Copyright (c) 2024 Sprinix Technolabs pvt Ltd.. (https://www.sprinix.com)
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="posts" engine="innodb" resource="default" comment="Post Table">
+        <column name="post_id" xsi:type="int" identity="true" nullable="false" comment="Post Id" />
+        <column name="post_image" xsi:type="varchar" length="500" comment="Post Image" />
+        <column name="title" xsi:type="varchar" length="250" nullable="false" comment="Title" />
+        <column name="summary" xsi:type="varchar" length="1000" comment="Post Summary" />
+        <column name="content" xsi:type="text" comment="Post Description" />
+        <column name="view_count" xsi:type="int" comment="Post View Counts" />
+        <column name="tags" xsi:type="varchar" length="200" comment="Post Tags" />
+        <column name="category" xsi:type="varchar" length="200" nullable="false" comment="Category Id" />
+        <column name="author_type" xsi:type="int" nullable="false" default="0" comment="Author Type" />
+        <column name="author" xsi:type="varchar" length="250" nullable="false" comment="Author" />
+        <column name="url_key" xsi:type="varchar" nullable="false" comment="URL Key" />
+        <column name="meta_title" xsi:type="varchar" length="255" nullable="true" comment="Meta Title"/>
+        <column name="meta_desc" xsi:type="text" nullable="true" comment="Meta Description"/>
+        <column name="meta_keyword" xsi:type="text" nullable="true" comment="Meta Keywords"/>
+        <column name="status" xsi:type="varchar" length="10" nullable="false" comment="Status" />
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP"
+                on_update="false" comment="Created Datetime" />
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP" on_update="true"
+                comment="Updated Datetime" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+        </constraint>
+    </table>
+    <table name="categories" engine="innodb" resource="default" comment="Categories Table">
+        <column name="category_id" xsi:type="int" identity="true" nullable="false" comment="Category Id" />
+        <column name="category" xsi:type="varchar" length="250" nullable="false" comment="Category Name" />
+        <column name="category_status" xsi:type="varchar" length="10" nullable="false" comment="Category Status" />
+        <column name="category_url_key" xsi:type="varchar" nullable="false" comment="Category URL Key" />
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP"
+                on_update="false" comment="Created Datetime"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP"
+                on_update="true" comment="Updated Datetime"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="category_id"/>
+        </constraint>
+    </table>
+    <table name="blogs_tags" engine="innodb" resource="default" comment="Tags Table">
+        <column name="tag_id" xsi:type="int" identity="true" nullable="false" comment="Tag Id" />
+        <column name="tag_name" xsi:type="varchar" length="250" nullable="false" comment="Tag Name" />
+        <column name="tag_status" xsi:type="varchar" length="10" nullable="false" comment="Tag Status" />
+        <column name="tag_url_key" xsi:type="varchar" nullable="false" comment="Tag URL Key" />
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP"
+                on_update="false" comment="Created Datetime"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP"
+                on_update="true" comment="Updated Datetime"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="tag_id"/>
+        </constraint>
+    </table>
+    <table name="post_comment" engine="innodb" resource="default" comment="Post Comment Table">
+        <column name="comment_id" xsi:type="int" identity="true" nullable="false" comment="Comment Id" />
+        <column name="comment_name" xsi:type="varchar" length="100" nullable="false" comment="Comment By - Name" />
+        <column name="comment_status" xsi:type="varchar" length="100" nullable="false" comment="Comment Status" />
+        <column name="comment_email" xsi:type="varchar" length="100" nullable="false" comment="Comment By - Email" />
+        <column name="comment" xsi:type="text" nullable="false" comment="Comment" />
+        <column name="commented_on" xsi:type="int" nullable="false" comment="Post Id" />
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP"
+                on_update="false" comment="Created Datetime"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP"
+                on_update="true" comment="Updated Datetime"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="comment_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="POST_COMMENT_COMMENTED_ON_POSTS_POST_ID" table="post_comment"
+                    column="commented_on" referenceTable="posts" referenceColumn="post_id" onDelete="CASCADE"/>
+    </table>
+    <table name="comment_reply" engine="innodb" resource="default" comment="Post Reply Table">
+        <column name="reply_id" xsi:type="int" identity="true" nullable="false" comment="Reply Id" />
+        <column name="reply_name" xsi:type="varchar" length="100" nullable="false" comment="Reply By - Name" />
+        <column name="reply_status" xsi:type="varchar" length="100" nullable="false" comment="Comment's Reply Status" />
+        <column name="reply_email" xsi:type="varchar" length="100" nullable="false" comment="Reply By - Email" />
+        <column name="reply" xsi:type="text" nullable="false" comment="Reply" />
+        <column name="post_id" xsi:type="int" nullable="false" comment="Post Id" />
+        <column name="replied_to" xsi:type="int" nullable="false" comment="Comment Id" />
+        <column xsi:type="timestamp" name="created_at" nullable="false" default="CURRENT_TIMESTAMP"
+                on_update="false" comment="Created Datetime"/>
+        <column xsi:type="timestamp" name="updated_at" nullable="false" default="CURRENT_TIMESTAMP"
+                on_update="true" comment="Updated Datetime"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="reply_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="POST_REPLY_REPLIED_TO_POST_COMMENT_COMMENT_ID" table="post_reply"
+                    column="replied_to" referenceTable="post_comment" referenceColumn="comment_id" onDelete="CASCADE"/>
+    </table>
+</schema>

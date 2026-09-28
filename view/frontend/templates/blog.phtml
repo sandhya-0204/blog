@@ -1,0 +1,296 @@
+<?php
+/**
+ * @package     Sprinix_Blogs
+ * @copyright   Copyright (c) 2024 Sprinix Technolabs pvt Ltd.. (https://www.sprinix.com)
+ */
+?>
+
+<?php
+/**
+ * @var \Sprinix\Blogs\Block\Index\Blog $block
+ */
+
+$comments = [];
+$repliedMessages = [];
+$recentPosts = [];
+$post = $block->getPost();
+if(!empty($block->getRecentPost())) {
+    $recentPosts = $block->getRecentPost()->getItems();
+}
+if (!empty($post)) {
+    $comments = $block->getCommentbyPostId($post->getPostId());
+    $repliedMessages = $block->getAllCommentsReply($post->getPostId());
+}
+$helper = $this->helper('Sprinix\Blogs\Helper\CustomDateTime');
+$layoutHelper = $this->helper('Sprinix\Blogs\Helper\Data');
+$categoryStatusChecker = $this->helper('Sprinix\Blogs\Helper\CategoryStatusChecker');
+$isRecentPostsVisible = $layoutHelper->getLayoutConfig('recent_posts');
+$isCommentsEnabled = $layoutHelper->isCommentsEnabled();
+$isViewCountEnabled = $layoutHelper->isViewCountEnabled();
+$commentLimit = $layoutHelper->getCommentCharacterLimit();
+if(isset($post['created_at'])) {
+    $helper->getFormattedDate($post->getCreatedAt());
+}
+
+?>
+<div class="sprinix-blog-wrapper-module">
+    <div class="row">
+        <?php if (!empty($post)): ?>
+            <div class="post-card box post-card-box-wrap">
+                <div class="post-card-main-image">
+                    <a href="<?= $block->getBaseUrl() . 'blog/' . $post->getUrlKey() ?>">
+                        <img src="<?= $block->getMedia() . 'Sprinix/Blogs/' . $post->getPostImage() ?>" alt="sprinix_<?= $post->getPostImage() ?>"/>
+                    </a>
+                </div>
+                <div class="post-card-body">
+                    <div class="post-details">
+                        <div class="post-author">
+                            <img src="https://cdn.pixabay.com/photo/2021/07/25/08/03/account-6491185_1280.png" alt="image"/>
+                            <p class="author-name"><?= $post->getAuthor() ?></p>
+                        </div>
+                        <div style="display: flex;gap: 5px;align-items:center;">
+                            <?php if ($isViewCountEnabled): ?>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 8s3-5.5 7-5.5 7 5.5 7 5.5-3 5.5-7 5.5-7-5.5-7-5.5z"/>
+                                <circle cx="8" cy="8" r="2.5"/>
+                            </svg>
+                                <?= (int)$post->getViewCount() ?>
+                            <?php endif; ?>
+                            <p class="post-created-date"><?= __($helper->getFormattedDate($post->getCreatedAt())) ?></p>
+                        </div>
+                    </div>
+                    <a class="post-title" href="<?= $block->getBaseUrl() . 'blog/' . $post->getUrlKey() ?>">
+                        <?= $post->getTitle() ?>
+                    </a>
+                    <p class="post-summary"><?php echo $post->getContent() ? $block->parseContent($post->getContent()) : null ?></p>
+                </div>
+                <?= $block->getChildHtml('blog.next.prev') ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="col col-main sprinix-blog-wrapper-module-left">
+            <div class="col col-left">
+                <div class="small-card-wrapper">
+                    <?php if(!empty($isRecentPostsVisible) && $isRecentPostsVisible): ?>
+                        <div class="small-card">
+                            <h3 class="card-header">Recent Posts</h3>
+                            <div class="card-content card-content-wrapper">
+                                <?php if (!empty($recentPosts)): ?>
+                                    <?php foreach ($recentPosts as $recentPost): ?>
+                                        <div class="recent-post">
+                                            <a class="recent-post-img-link"
+                                               href="<?= $block->getBaseUrl() . 'blog/' . $recentPost->getUrlKey() ?>">
+                                                <img src="<?= $block->getMedia() . 'Sprinix/Blogs/' . $recentPost->getPostImage() ?>"
+                                                     alt="sprinix_<?= $recentPost->getPostImage() ?>"
+                                                />
+                                            </a>
+                                            <div class="recent-post-content">
+                                            <div class="post-details">
+                                                <div class="post-author">
+                                                    <img src="https://cdn.pixabay.com/photo/2021/07/25/08/03/account-6491185_1280.png"
+                                                         alt="image"/>
+                                                    <p class="author-name"><?= $recentPost->getAuthor() ?></p>
+                                                </div>
+                                                <p class="post-created-date"><?= __($helper->getFormattedDate($recentPost->getCreatedAt())) ?></p>
+                                            </div>
+                                            <a class="recent-post-title"
+                                               href="<?= $block->getBaseUrl() . 'blog/' . $recentPost->getUrlKey() ?>">
+                                                <?= $recentPost->getTitle() ?>
+                                            </a>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php if ($isCommentsEnabled): ?>
+            <div class="post-comment-section box">
+                <div id="post-comment">
+                    <h3>Leave Your Comment</h3>
+                    <form id="comment-form" action="<?= $this->getCommentFormAction()  ?>"
+                          data-mage-init='{"validation": {}}' method="post">
+                        <input type="hidden" name="commented_on" value="<?= !empty($post) ? $post->getPostId() : null ?>" />
+                        <div class="input-group">
+
+                            <input type="text" name="comment_name" placeholder="Name" data-validate="{required:true}"/>
+
+                            <input type="email" name="comment_email" placeholder="Email"
+                                   data-validate="{required:true, 'validate-email':true}"/>
+                            <textarea rows="4" name="comment" placeholder="Comment" data-validate="{required:true}"></textarea>
+                            <button class="blog-comment-btn" type="submit">Post Comment</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="post-comment-reply">
+                    <?php foreach ($comments as $comment) : ?>
+                        <?php $count = 0; ?>
+                        <div class="message-content">
+                            <div>
+                                <div class="comment-user-info">
+                                    <img class="user-photo"
+                                         src="https://cdn.pixabay.com/photo/2021/07/25/08/03/account-6491185_1280.png"/>
+                                    <span class="user-name"><?= __($comment->getCommentName()) ?></span>
+                                    <span class="comment-created_at"><?= __($helper->getTimeDiff($comment->getCreatedAt())) ?></span>
+                                </div>
+                                <?php
+                                $text = $comment->getComment();
+                                ?>
+
+                                <?php if ($commentLimit > 0 && mb_strlen($text) > $commentLimit): ?>
+                                    <div class="comment-read-more">
+        <span class="short-text">
+            <?= $escaper->escapeHtml(mb_substr($text, 0, $commentLimit)) ?>...
+        </span>
+
+                                        <span class="full-text" style="display:none;">
+            <?= $escaper->escapeHtml($text) ?>
+        </span>
+
+                                        <a href="#" class="toggle-comment">
+                                            <?= __('Read More') ?>
+                                        </a>
+                                    </div>
+                                <?php else: ?>
+                                    <p class="comment-text">
+                                        <?= $escaper->escapeHtml($text) ?>
+                                    </p>
+                                <?php endif; ?>
+                            </div>
+                            <?php if(!empty($repliedMessages)): ?>
+                                <? foreach ($repliedMessages as $message): ?>
+                                    <?php if($message->getRepliedTo() === $comment->getCommentId()): ?>
+                                        <?php $count +=1  ?>
+                                        <div style="margin-left: 1.8rem; opacity: 0.9;">
+                                            <div class="comment-user-info">
+                                                <img class="user-photo"
+                                                     src="https://cdn.pixabay.com/photo/2021/07/25/08/03/account-6491185_1280.png"/>
+                                                <span class="user-name"><?= __($message->getReplyName()) ?></span>
+                                                <span class="comment-created_at"><?= $helper->getTimeDiff($message->getCreatedAt()) ?></span>
+                                            </div>
+                                            <?php
+                                            $text = $message->getReply();
+                                            ?>
+
+                                            <?php if ($commentLimit > 0 && mb_strlen($text) > $commentLimit): ?>
+                                                <div class="comment-read-more">
+        <span class="short-text">
+            <?= $escaper->escapeHtml(mb_substr($text, 0, $commentLimit)) ?>...
+        </span>
+
+                                                    <span class="full-text" style="display:none;">
+            <?= $escaper->escapeHtml($text) ?>
+        </span>
+
+                                                    <a href="#" class="toggle-comment">
+                                                        <?= __('Read More') ?>
+                                                    </a>
+                                                </div>
+                                            <?php else: ?>
+                                                <p class="comment-text">
+                                                    <?= $escaper->escapeHtml($text) ?>
+                                                </p>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                            <div class="reply-btns">
+                                <a class="reply-btn" href="#" data-target="reply-form-<?= $comment->getCommentId() ?>">Reply</a>
+                                <p><span><?= $count; ?></span>Reply</p>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div id="comment-reply-form" style="display: none">
+                    <h3>Reply</h3>
+                    <form id="reply-form" action="<?= $this->getReplyFormAction() ?>"
+                          data-mage-init='{"validation": {}}'
+                          method="post">
+                        <input type="hidden" name="post_id" value="<?= !empty($post) ? $post->getPostId() : null ?>" />
+                        <div class="input-group">
+                            <input type="text" name="reply_name" placeholder="Name" data-validate="{required:true}" />
+                            <input type="email" name="reply_email" placeholder="Email" data-validate="{required:true, 'validate-email':true}" />
+                            <textarea name="reply" rows="4" placeholder="Comment" data-validate="{required:true}"></textarea>
+                            <div>
+                                <button class="blog-comment-btn" type="submit">Post Reply</button>
+                                <button type="button" class="cancel">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    @media screen and (min-width: 768px) {
+        .sprinix-blog-wrapper-module .row {
+            grid-template-columns: <?= !empty($isRecentPostsVisible) && $isRecentPostsVisible ? '2fr 1fr' : 'repeat(1,1fr)' ?>;
+        <?= !empty($isRecentPostsVisible) && $isRecentPostsVisible ? null : 'justify-content: center;'?>
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .sprinix-blog-wrapper-module .row {
+            grid-template-columns: <?= !empty($isRecentPostsVisible) && $isRecentPostsVisible ? '1fr' : '1fr' ?>;
+        <?= !empty($isRecentPostsVisible) && $isRecentPostsVisible ? null : 'justify-content: center;'?>
+        }
+    }
+</style>
+
+<script type="text/x-magento-init">
+    {
+        "#comment-form": {
+            "validation": {}
+        },
+        "#reply-form": {
+            "validation": {}
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    require(['jquery', 'mage/validation'], function ($) {
+        $(document).ready(function () {
+            $(document).on('click', '.reply-btn', function (e) {
+                e.preventDefault();
+                $("#reply-form-container").remove();
+                const target = $(this).data('target');
+                const form = $("#comment-reply-form")[0].innerHTML;
+                $(`<div id="reply-form-container">${form}<div>`).insertAfter($(this).parent());
+                $('#reply-form-container #reply-form').validation();
+                $("#reply-form-container h2").text();
+                $('<input>', {
+                    type: 'hidden',
+                    name: 'replied_to',
+                    value: target.split('-').at(-1)
+                }).prependTo("#reply-form");
+            });
+            $(document).on('click', '.cancel', function () {
+                if($("#reply-form-container").length) {
+                    $("#reply-form-container").remove();
+                }
+            })
+            $(document).on('click', '.toggle-comment', function(e){
+                e.preventDefault();
+
+                const wrapper = $(this).closest('.comment-read-more');
+
+                wrapper.find('.short-text').toggle();
+                wrapper.find('.full-text').toggle();
+
+                if ($(this).text() === 'Read More') {
+                    $(this).text('Read Less');
+                } else {
+                    $(this).text('Read More');
+                }
+            });
+        });
+    });
+</script>

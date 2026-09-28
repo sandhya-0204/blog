@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @package     Sprinix_Blogs
+ * @copyright   Copyright (c) 2024 Sprinix Technolabs pvt Ltd.. (https://www.sprinix.com)
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <sprinix_blogs>
+            <general>
+                <enable>0</enable>
+                <show_in_menu>0</show_in_menu>
+            </general>
+            <layout>
+                <recent_posts>0</recent_posts>
+                <categories>0</categories>
+                <sortBy>0</sortBy>
+                <tags>0</tags>
+                <show_view_count>0</show_view_count>
+                <copy_clipboard>0</copy_clipboard>
+            </layout>
+            <comment_reply_settings>
+                <comments>0</comments>
+                <new_comment_status>pending</new_comment_status>
+                <new_reply_status>pending</new_reply_status>
+                <max_comments_per_email>5</max_comments_per_email>
+                <comment_character_limit>150</comment_character_limit>
+            </comment_reply_settings>
+            <previous_next_post>
+                <display_btn>0</display_btn>
+            </previous_next_post>
+            <date_format>
+                <format>Relative Date</format>
+            </date_format>
+        </sprinix_blogs>
+    </default>
+</config>

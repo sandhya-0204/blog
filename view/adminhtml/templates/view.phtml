@@ -1,0 +1,52 @@
+<?php
+/**
+ * @package     Sprinix_Blogs
+ * @copyright   Copyright (c) 2024 Sprinix Technolabs pvt Ltd.. (https://www.sprinix.com)
+ */
+?>
+
+<?php
+/**
+ * @var \Sprinix\Blogs\Adminhtml\Comments\Comment $block
+ */
+?>
+
+<?php
+    $data = [];
+    $id = $block->getRequest()->getParam('comment_id');
+    if(!empty($id)) {
+        $data = $block->getAllReplies($id);
+    }
+?>
+<div style="background: #f8f8f8;
+    border-bottom: 1px solid #e3e3e3;
+    border-top: 1px solid #e3e3e3;
+    padding: 1.5rem; display: flex; justify-content: flex-end; align-items: center; margin-bottom: 2rem;">
+    <button style="background: #eb5202; color: #fff; padding: 10px; border: none; outline: none;" id="backBtn"><?= __('Go Back') ?></button>
+</div>
+<?php if (!empty($data)) : ?>
+<h2 style="font-weight: 800;"><?= $data[0]->getTitle() ?></h2>
+<?php foreach ($data as $item): ?>
+<div>
+    <p><?= $item->getReply() ?></p>
+    <span style="display: flex; justify-content: end; align-items: center; gap: 2rem; margin-top: 2rem;">
+        <a style="font-weight: 700;" href="<?= $block->getUrl('blogs/reply/form/reply_id/'.$item->getReplyId()) ?>">Edit</a>
+        <a style="font-weight: 700;" href="<?= $block->getUrl('blogs/reply/delete/reply_id/'.$item->getReplyId()) ?>">Delete</a>
+    </span>
+</div>
+<hr style="margin-bottom: 3rem;" />
+<?php endforeach; ?>
+<?php else: ?>
+    <h2>No Data Found!</h2>
+<?php endif; ?>
+
+<script type="text/javascript">
+    require(['jquery'], function ($) {
+        $(document).ready(function () {
+            $("#backBtn").on('click', function (e) {
+                e.preventDefault();
+                window.location.href = `<?= $block->getUrl('blogs/comments/index', ['_secure' => true]) ?>`
+            })
+        })
+    });
+</script>
