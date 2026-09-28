@@ -6,6 +6,7 @@
 
 namespace Sprinix\Blogs\Block\Index;
 
+use Magento\Cms\Model\Template\FilterProvider;
 use Magento\Framework\DataObject;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template;
@@ -15,6 +16,8 @@ use Sprinix\Blogs\Model\ResourceModel\Comment\CollectionFactory as CommentCollec
 use Sprinix\Blogs\Model\ResourceModel\CommentReply\CollectionFactory as CommentReplyCollectionFactory;
 use Sprinix\Blogs\Model\ResourceModel\Post\Collection;
 use Sprinix\Blogs\Model\ResourceModel\Post\CollectionFactory;
+use Psr\Log\LoggerInterface;
+use Magento\Framework\Message\ManagerInterface;
 
 /**
  * Class Blog
@@ -46,24 +49,42 @@ class Blog extends Template
      * @var CategoryStatusChecker
      */
     protected $categoryStatusChecker;
+    /**
+     * @var FilterProvider
+     */
+    protected $filterProvider;
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+    /**
+     * @var ManagerInterface
+     */
+    protected ManagerInterface $messageManager;
 
     /**
      * Blog constructor.
+     * @param FilterProvider $filterProvider
      * @param CategoryStatusChecker $categoryStatusChecker
      * @param CollectionFactory $postCollectionFactory
      * @param CommentCollectionFactory $commentCollectionFactory
      * @param CommentReplyCollectionFactory $commentReplyCollectionFactory
      * @param StoreManagerInterface $storeManager
+     * @param LoggerInterface $logger
      * @param Template\Context $context
+     * @param ManagerInterface $messageManager
      * @param array $data
      */
     public function __construct(
+        FilterProvider $filterProvider,
         CategoryStatusChecker $categoryStatusChecker,
         CollectionFactory $postCollectionFactory,
         CommentCollectionFactory $commentCollectionFactory,
         CommentReplyCollectionFactory $commentReplyCollectionFactory,
         StoreManagerInterface $storeManager,
+        LoggerInterface $logger,
         Template\Context $context,
+        ManagerInterface $messageManager,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -72,6 +93,9 @@ class Blog extends Template
         $this->commentReplyCollectionFactory = $commentReplyCollectionFactory;
         $this->postCollectionFactory = $postCollectionFactory;
         $this->_storeManager = $storeManager;
+        $this->filterProvider = $filterProvider;
+        $this->messageManager = $messageManager;
+        $this->logger = $logger;
     }
 
     /**
@@ -108,7 +132,7 @@ class Blog extends Template
         $post = null;
         try {
             $categoryIds = $this->categoryStatusChecker->getEnabledCategoryIds();
-            $currentUrl  = $this->getUrl('*/*/*', ['_current' => true, '_use_rewrite' => true]);
+            $currentUrl  = $this->getUrl('*/*/*', ['_use_rewrite' => true]);
             $url_key = explode('/blog/', $currentUrl);
 
             if(isset($url_key[1]) && !empty($categoryIds)) {
@@ -167,25 +191,38 @@ class Blog extends Template
         $comment = null;
         try {
             $commentCollection = $this->commentCollectionFactory->create();
-            $comment = $commentCollection->getItemsByColumnValue('commented_on', $postId);
+            $commentCollection->addFieldToFilter('commented_on', $postId);
+            $commentCollection->addFieldToFilter('comment_status', 'approved');
+
+            $comment = $commentCollection->getItems();
         }catch(\Exception $e) {
             $this->messageManager->addErrorMessage(__('Failed To Get Comment : ' . $e->getMessage()));
         }
         return $comment;
     }
 
-
     /**
      * @param $postId
      * @return array|null
      */
-    public function getAllCommentsReply($postId) {
+    public function getAllCommentsReply($postId)
+    {
         $messages = null;
+
         try {
             $commentReplyCollection = $this->commentReplyCollectionFactory->create();
-            $messages = $commentReplyCollection->getItemsByColumnValue('post_id', $postId);
-        }catch (\Exception $e) {
-            $this->messageManager->addErrorMessage(__('Failed To Get Replies : ' . $e->getMessage()));
+
+            $commentReplyCollection
+                ->addFieldToFilter('main_table.post_id', $postId)
+                ->addFieldToFilter('main_table.reply_status', 'approved')
+                ->addFieldToFilter('comment.comment_status', 'approved');
+
+            $messages = $commentReplyCollection->getItems();
+
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage(
+                __('Failed To Get Replies: ' . $e->getMessage())
+            );
         }
         return $messages;
     }
@@ -197,6 +234,22 @@ class Blog extends Template
     {
         parent::_prepareLayout();
         $this->_addBreadCrumbs();
+        $post = $this->getPost();
+        if ($post && $post->getId()) {
+            $pageConfig = $this->pageConfig;
+            if ($post->getTitle()) {
+                $pageConfig->getTitle()->set($post->getTitle());
+            }
+            if ($post->getMetaTitle()) {
+                $pageConfig->setMetaTitle($post->getMetaTitle());
+            }
+            if ($post->getMetaDesc()) {
+                $pageConfig->setDescription($post->getMetaDesc());
+            }
+            if ($post->getMetaKeyword()) {
+                $pageConfig->setKeywords($post->getMetaKeyword());
+            }
+        }
         return $this;
     }
 
@@ -238,6 +291,31 @@ class Blog extends Template
             }
         }catch (\Exception $e) {
             $this->messageManager->addErrorMessage(__('Error : ' . $e->getMessage()));
+        }
+    }
+
+     /**
+     * Parse Magento content (widgets, page builder, CMS directives)
+     *
+     * @param string|null $content
+     * @return string
+     */
+    public function parseContent($content)
+    {
+        try {
+            if (empty($content) || !is_string($content)) {
+                return '';
+            }
+
+            $parsedContent = $this->filterProvider
+                ->getPageFilter()
+                ->filter($content);
+
+            return $parsedContent ?: '';
+
+        } catch (\Throwable $e) {
+            $this->logger->error('Content parsing failed: ' . $e->getMessage());
+            return htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
         }
     }
 }
