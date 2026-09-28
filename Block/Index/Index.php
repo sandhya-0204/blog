@@ -6,7 +6,6 @@
 
 namespace Sprinix\Blogs\Block\Index;
 
-use Magento\Cms\Model\Template\FilterProvider;
 use Magento\Framework\DataObject;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template;
@@ -17,7 +16,6 @@ use Sprinix\Blogs\Model\ResourceModel\Categories\CollectionFactory as CategoryCo
 use Sprinix\Blogs\Model\ResourceModel\Post\Collection;
 use Sprinix\Blogs\Model\ResourceModel\Post\CollectionFactory;
 use Sprinix\Blogs\Model\ResourceModel\Tags\CollectionFactory as TagsCollectionFactory;
-use Magento\Framework\Message\ManagerInterface;
 
 /**
  * Class Index
@@ -59,14 +57,6 @@ class Index extends Template
      * @var TagStatus
      */
     protected $tagStatusChecker;
-    /**
-     * @var FilterProvider
-     */
-    protected $filterProvider;
-    /**
-     * @var ManagerInterface
-     */
-    protected $messageManager;
 
     /**
      * Index constructor.
@@ -77,8 +67,6 @@ class Index extends Template
      * @param TagsCollectionFactory $tagsCollectionFactory
      * @param TagStatus $tagStatus
      * @param Template\Context $context
-     * @param FilterProvider $filterProvider
-     * @param ManagerInterface $messageManager
      * @param array $data
      */
     public function __construct(
@@ -89,8 +77,6 @@ class Index extends Template
         TagsCollectionFactory $tagsCollectionFactory,
         TagStatus $tagStatus,
         Template\Context $context,
-        FilterProvider $filterProvider,
-        ManagerInterface $messageManager,
         array $data = []
     )
     {
@@ -101,8 +87,6 @@ class Index extends Template
         $this->_storeManager = $storeManager;
         $this->tagsCollectionFactory = $tagsCollectionFactory;
         $this->tagStatusChecker = $tagStatus;
-        $this->filterProvider = $filterProvider;
-        $this->messageManager = $messageManager;
     }
 
     /**
@@ -170,6 +154,7 @@ class Index extends Template
      */
     public function filterPostByCategoryId($id)
     {
+
         try {
             $posts = null;
             $category = $this->categoryStatusChecker->getEnabledCategoryById($id);
@@ -426,30 +411,6 @@ class Index extends Template
             }
         }catch (\Exception $e) {
             $this->messageManager->addErrorMessage(__('Error : ' . $e->getMessage()));
-        }
-    }
-
-     /**
-     * Parse Magento content (widgets, page builder, CMS directives)
-     *
-     * @param string|null $content
-     * @return string
-     */
-    public function parseContent($content)
-    {
-        try {
-            if (empty($content) || !is_string($content)) {
-                return '';
-            }
-            $parsedContent = $this->filterProvider
-                ->getPageFilter()
-                ->filter($content);
-            return $parsedContent ?: '';
-        } catch (\Throwable $e) {
-            $this->messageManager->addErrorMessage(__('Content parsing failed: ' . $e->getMessage()));
-            return trim(
-                preg_replace('/\s+/u', ' ', strip_tags($content))
-            );
         }
     }
 }
